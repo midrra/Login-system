@@ -1,65 +1,87 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Slider from "../components/Slider";
-import { Triangle } from "lucide-react"
 import { Eye } from "lucide-react";
+import InputField from "../components/InputField";
+import { Formik } from "formik";
+import * as Yup from "yup"
 
 
 function Login() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    console.log("login submit is clicked!!");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
       <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540]">
-        
         {/* Left side*/}
         <div className="flex-1">
-        <Slider />
-         </div>
-         {/* Right side (Form section) */}
+          <Slider />
+        </div>
+        {/* Right side (Form section) */}
         <div className="md:w-1/2 p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-semibold mb-2">Create an account</h2>
+          <h2 className="text-2xl font-semibold mb-2">Login</h2>
           <p className="text-sm text-gray-400 mb-6">
-            Already have an account?
-            <Link to="/signup" className="text-purple-400 hover:underline">
-              Log in
+           Create an account
+            <Link to="/signup" className="text-purple-400 hover:underline pl-1">
+              Signup
             </Link>
           </p>
 
-          <form className="space-y-4">
+        {/* struction yup and formik */}
+            <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={Yup.object({
+              firstName: Yup.string().required("Enter Your Name"),
+              email: Yup.string()
+                .email("Invalid email address")
+                .required("Required"),
+              password: Yup.string()
+                .min(8, "Must be at least 8 characters")
+                .required("Required"),
+            })}
+            validateOnChange={true} // ✅ This enables validation on every input change
+            validateOnBlur={true}
+          >
+            {({
+              handleChange,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+              handleBlur,
+              setFieldTouched,
+            }) => (
+
+          <form className="space-y-4" onSubmit={submitHandler}>
             <div className="flex gap-3">
-              <input
+              <InputField
                 type="text"
-                placeholder="First name"
-                className="w-1/2 bg-[#3b3452] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
-              <input
-                type="text"
-                placeholder="Last name"
-                className="w-1/2 bg-[#3b3452] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Your name"
+                className="w-full"
               />
             </div>
-
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full bg-[#3b3452] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-
+            <InputField type="Email" placeholder="Email" className="w-full" />
             <div className="relative">
-              <input
+              <InputField
                 type="password"
                 placeholder="Enter your password"
-                className="w-full bg-[#3b3452] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-                <Eye className="absolute right-3 top-1.5 text-gray-400 cursor-pointer"/>
+                className="w-full"
+              />
+              <Eye className="absolute right-3 top-1.5 text-gray-400 cursor-pointer" />
             </div>
-
             <div className="flex items-center text-sm">
-              <input type="checkbox" className="mr-2" />
+              <input type="checkbox" className="mr-2 cursor-pointer" />
               <label>
-                I agree to the{" "}
-                <Link to="/terms & conditions" className="text-purple-400 hover:underline">
+                I agree to the
+                <Link
+                  to="/terms & conditions"
+                  className="text-purple-400 hover:underline pl-1"
+                >
                   Terms & Conditions
                 </Link>
               </label>
@@ -67,7 +89,7 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition"
+              className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
             >
               Create account
             </button>
@@ -79,7 +101,7 @@ function Login() {
             </div>
 
             <div className="flex gap-3">
-              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm">
+              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                 <img
                   src="https://www.svgrepo.com/show/355037/google.svg"
                   alt="Google"
@@ -87,19 +109,18 @@ function Login() {
                 />
                 Google
               </button>
-              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm">
+              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                 <img
-                src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
+                  src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
                   alt="Apple"
                   className="w-4 h-4 text-white"
                 />
-
                 Apple
               </button>
-              
-
             </div>
           </form>
+            )
+          }
         </div>
       </div>
     </div>

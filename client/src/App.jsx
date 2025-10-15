@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Testing/>}/>
         <Route path="/terms & conditions" element={<Terms/>}/>
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/" element={<Signup />} /> */}
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="*"
           element={<div className="bg-red-600">404 Page Not Found</div>}
