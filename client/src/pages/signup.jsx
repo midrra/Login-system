@@ -3,14 +3,19 @@ import { Link } from "react-router-dom";
 import Slider from "../components/Slider";
 import { Eye } from "lucide-react";
 import InputField from "../components/InputField";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 function Login() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    console.log("signup submit is clicked!!");
-  };
+  const validationSchema = Yup.object({
+    firstName: Yup.string().required("Enter Your First Name"),
+    lastName: Yup.string().required("Enter Your Last Name"),
+    email: Yup.string().email("Invalid email address").required("Required"),
+    password: Yup.string()
+      .min(8, "Must be at least 8 characters")
+      .required("Required"),
+    agree: Yup.bool().oneOf([true], "You must agree to the Terms & Conditions"),
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
@@ -29,73 +34,186 @@ function Login() {
             </Link>
           </p>
 
-          <form className="space-y-4" onSubmit={submitHandler}>
-            <div className="flex gap-3">
-              <InputField
-                type="text"
-                placeholder="First name"
-                className="w-1/2"
-              />
-              <InputField
-                type="text"
-                placeholder="Last name"
-                className="w-1/2"
-              />
-            </div>
-            <InputField type="Email" placeholder="Email" className="w-full" />
-            <div className="relative">
-              <InputField
-                type="password"
-                placeholder="Enter your password"
-                className="w-full"
-              />
-              <Eye className="absolute right-3 top-1.5 text-gray-400 cursor-pointer" />
-            </div>
-            <div className="flex items-center text-sm">
-              <input type="checkbox" className="mr-2 cursor-pointer" />
-              <label>
-                I agree to the
-                <Link
-                  to="/terms & conditions"
-                  className="text-purple-400 hover:underline pl-1"
+          {/* structure yup and formik */}
+          <Formik
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+              agree: false,
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+              console.log(values);
+            }}
+            validateOnChange={true}
+            validateOnBlur={true}
+          >
+            {({
+              handleChange,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+              handleBlur,
+              setFieldTouched,
+            }) => (
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div
+                  className={`flex gap-3 ${
+                    (touched.firstName || touched.lastName) && "!mb-1"
+                  }`}
                 >
-                  Terms & Conditions
-                </Link>
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
-            >
-              Create account
-            </button>
-
-            <div className="flex items-center gap-2 my-4">
-              <hr className="flex-grow border-gray-600" />
-              <span className="text-gray-400 text-sm">or login in with</span>
-              <hr className="flex-grow border-gray-600" />
-            </div>
-
-            <div className="flex gap-3">
-              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                <img
-                  src="https://www.svgrepo.com/show/355037/google.svg"
-                  alt="Google"
-                  className="w-4 h-4"
+                  <InputField
+                    type="text"
+                    placeholder="First name"
+                    className={`w-1/2 ${touched.firstName && "!mb-1"}`}
+                    value={values.firstName}
+                    name="firstName"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("firstName", true, false);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                  <InputField
+                    type="text"
+                    placeholder="Last name"
+                    className={`w-1/2 ${touched.lastName && "!mb-1"}`}
+                    value={values.lastName}
+                    name="lastName"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("lastName", true, false);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </div>
+                {(touched.firstName || touched.lastName) && (
+                  <div
+                    className={`flex gap-10 ${
+                      (touched.firstName || touched.lastName) && "!mb-1"
+                    }`}
+                  >
+                    {touched.firstName && errors.firstName && (
+                      <p
+                        className={`text-red-500 ${
+                          touched.firstName && "!mb-1"
+                        }`}
+                      >
+                        {errors.firstName}
+                      </p>
+                    )}
+                    {touched.lastName && errors.lastName && (
+                      <p
+                        className={`text-red-500 ${
+                          touched.lastName && "!mb-1"
+                        }`}
+                      >
+                        {errors.lastName}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <InputField
+                  type="Email"
+                  placeholder="Email"
+                  className={`w-full ${touched.email && "!mb-1"}`}
+                  value={values.email}
+                  name="email"
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFieldTouched("email", true, false);
+                  }}
+                  onBlur={handleBlur}
                 />
-                Google
-              </button>
-              <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
-                  alt="Apple"
-                  className="w-4 h-4 text-white"
-                />
-                Apple
-              </button>
-            </div>
-          </form>
+                {touched.email && errors.email && (
+                  <p className={`text-red-500 ${touched.email && "!mb-1"}`}>
+                    {errors.email}
+                  </p>
+                )}
+                <div className="relative">
+                  <InputField
+                    type="password"
+                    placeholder="Enter your password"
+                    className={`w-full ${touched.password && "!mb-1"}`}
+                    value={values.password}
+                    name="password"
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFieldTouched("password", true, false);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                  {touched.password && errors.password && (
+                    <p
+                      className={`text-red-500 ${touched.password && "!mb-1"}`}
+                    >
+                      {errors.password}
+                    </p>
+                  )}
+                  <Eye className="absolute right-3 top-1.5 text-gray-400 cursor-pointer" />
+                </div>
+                <div className={`flex items-center text-sm  ${touched.agree && "!mb-1"}`}>
+                  <input
+                    type="checkbox"
+                    name="agree"
+                    checked={values.agree}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`mr-2 cursor-pointer`}
+                  />
+                  <label>
+                    I agree to the
+                    <Link
+                      to="/terms & conditions"
+                      className="text-purple-400 hover:underline pl-1"
+                    >
+                      Terms & Conditions
+                    </Link>
+                  </label>
+                </div>
+                {touched.agree && errors.agree && (
+                  <p className={`text-red-500 text-sm  ${touched.agree && "!mb-1"}`}>{errors.agree}</p>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
+                >
+                  Create account
+                </button>
+
+                <div className="flex items-center gap-2 my-4">
+                  <hr className="flex-grow border-gray-600" />
+                  <span className="text-gray-400 text-sm">
+                    or login in with
+                  </span>
+                  <hr className="flex-grow border-gray-600" />
+                </div>
+
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <img
+                      src="https://www.svgrepo.com/show/355037/google.svg"
+                      alt="Google"
+                      className="w-4 h-4"
+                    />
+                    Google
+                  </button>
+                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
+                      alt="Apple"
+                      className="w-4 h-4 text-white"
+                    />
+                    Apple
+                  </button>
+                </div>
+              </form>
+            )}
+          </Formik>
         </div>
       </div>
     </div>

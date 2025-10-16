@@ -20,7 +20,7 @@ function Slider() {
           <CarouselItem>
             <img
               src="https://picsum.photos/600/700?random=1"
-              className="rounded-lg w-full"
+              className="rounded-lg w-full h-full object-cover"
               alt="Slide 1"
               />
             {/* <div className="absolute bottom-[9%] left-[25%] text-center">
