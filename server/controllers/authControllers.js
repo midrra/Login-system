@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import axios from 'axios';
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -21,7 +22,17 @@ const generateTokens = (user) => {
 // Signup
 export const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { firstName,lastName, email, password ,captchaToken} = req.body;
+
+     // Verify captcha
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
+    );
+
+    if (!response.data.success || response.data.score < 0.5) {
+      return res.status(400).json({ message: "Captcha verification failed" });
+    }
+
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -29,7 +40,8 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
     });

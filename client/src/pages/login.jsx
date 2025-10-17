@@ -1,12 +1,25 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Slider from "../components/Slider";
 import { Eye } from "lucide-react";
 import InputField from "../components/InputField";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { login } from "../api/auth";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Spinner } from "@/components/ui/spinner";
+// import { useFormikContext } from "formik";
+
 
 function Login() {
+  const [check, setCheck] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState("");
+    const [captchaError, setCaptchaError] = useState("");
+      // const { setErrors } = useFormikContext();
+  
+
+  const navigate = useNavigate();
   const validationSchema = Yup.object({
     name: Yup.string().required("Enter Your Name"),
     email: Yup.string().email("Invalid email address").required("Required"),
@@ -18,7 +31,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
-      <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540] md:h-[80vh]">
+      <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540] md:h-[98vh]">
         {/* Left side*/}
         <div className="flex-1">
           <Slider />
@@ -27,7 +40,7 @@ function Login() {
         <div className="md:w-1/2 p-8 flex flex-col justify-center">
           <h2 className="text-2xl font-semibold mb-2">Login</h2>
           <p className="text-sm text-gray-400 mb-6">
-            Create an account
+            Create an account?
             <Link to="/signup" className="text-purple-400 hover:underline pl-1">
               Signup
             </Link>
@@ -37,8 +50,25 @@ function Login() {
           <Formik
             initialValues={{ name: "", email: "", password: "", agree: false }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log("Form submitted!", values);
+            onSubmit={async (values, { setSubmitting,setErrors }) => {
+                if (!captchaToken) {
+                  setErrors({ general: "captcha filed to execute" });
+                  setSubmitting(true);
+                  retrun;
+                }
+              try {
+                const data = await login({
+                  name: values.name,
+                  email: values.email,
+                  password: values.password,
+                  captchaToken,
+                });
+                setSubmitting(false);
+                console.log("Login successfully", data);
+                navigate("/");
+              } catch (error) {
+                console.log(error.message);
+              }
             }}
             validateOnChange={true}
             validateOnBlur={true}
@@ -48,6 +78,8 @@ function Login() {
               handleSubmit,
               values,
               errors,
+              setErrors,
+              isSubmitting,
               touched,
               handleBlur,
               setFieldTouched,
@@ -89,7 +121,7 @@ function Login() {
                 )}
                 <div className="relative">
                   <InputField
-                    type="password"
+                    type={check ? "text" : "password"}
                     placeholder="Enter your password"
                     name="password"
                     className="w-full"
@@ -107,7 +139,10 @@ function Login() {
                       {errors.password}
                     </p>
                   )}
-                  <Eye className="absolute right-3 top-1.5 text-gray-400 cursor-pointer" />
+                  <Eye
+                    className="absolute right-3 top-1.5 text-gray-400 cursor-pointer"
+                    onClick={() => setCheck((prev) => !prev)}
+                  />
                 </div>
                 <div
                   className={`flex items-center text-sm  ${
@@ -142,12 +177,31 @@ function Login() {
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
-                >
-                  Create account
-                </button>
+                {/* reCAPTCHA v2 */}
+                <div className="my-4">
+                  <ReCAPTCHA
+                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    onChange={(token) => {
+                      setCaptchaToken(token);
+                      if (token)
+                        setErrors((prev) => ({ ...prev, general: "" }));
+                    }}
+                  />
+                  <p className="text-red-500">{errors.general}</p>
+                </div>
+
+                <div className="relative">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
+                  >
+                    Login
+                    {isSubmitting && (
+                      <Spinner className="absolute top-3 left-33" />
+                    )}
+                  </button>
+                </div>
 
                 <div className="flex items-center gap-2 my-4">
                   <hr className="flex-grow border-gray-600" />

@@ -1,15 +1,27 @@
-// import axios from "axios";
+import api from "./axios";
 
-// const API = axios.create({
-//   baseURL: "http://localhost:5000/api/auth", // adjust to your backend route
-// });
+// Signup request
+export const signup = async (userData) => {
+  try {
+    const res = await api.post("/auth/signup", userData);
+    if (res.data.accessToken) {
+      localStorage.setItem("accessToken", res.data.accessToken);
+    }
+    return res.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
 
-// // Attach token automatically
-// API.interceptors.request.use((req) => {
-//   const token = localStorage.getItem("token");
-//   if (token) req.headers.Authorization = `Bearer ${token}`;
-//   return req;
-// });
-
-// export const signup = (formData) => API.post("/signup", formData);
-// export const login = (formData) => API.post("/login", formData);
+// Login request
+export const login = async (credentials) => {
+  try {
+    const res = await api.post("/auth/login", credentials);
+     if (res.data.accessToken) {
+      localStorage.setItem("accessToken", res.data.accessToken);
+    }
+    return res.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

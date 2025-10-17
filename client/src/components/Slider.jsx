@@ -19,7 +19,7 @@ function Slider() {
         <CarouselContent>
           <CarouselItem>
             <img
-              src="https://picsum.photos/600/700?random=1"
+              src="https://picsum.photos/600/900?random=1"
               className="rounded-lg w-full h-full object-cover"
               alt="Slide 1"
               />
@@ -34,7 +34,7 @@ function Slider() {
           </CarouselItem>
           <CarouselItem>
             <img
-              src="https://picsum.photos/600/700?random=2"
+              src="https://picsum.photos/600/900?random=2"
               className="rounded-lg w-full"
               alt="Slide 2"
             />
@@ -49,7 +49,7 @@ function Slider() {
           </CarouselItem>
           <CarouselItem>
             <img
-              src="https://picsum.photos/600/700?random=3"
+              src="https://picsum.photos/600/900?random=3"
               className="rounded-lg w-full"
               alt="Slide 3"
               />
