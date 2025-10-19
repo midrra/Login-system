@@ -1,7 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import axios from 'axios';
+import axios from "axios";
+import { OAuth2Client } from "google-auth-library";
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -22,9 +23,9 @@ const generateTokens = (user) => {
 // Signup
 export const signup = async (req, res) => {
   try {
-    const { firstName,lastName, email, password ,captchaToken} = req.body;
+    const { firstName, lastName, email, password, captchaToken } = req.body;
 
-     // Verify captcha
+    // Verify captcha
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
     );
@@ -32,7 +33,6 @@ export const signup = async (req, res) => {
     if (!response.data.success || response.data.score < 0.5) {
       return res.status(400).json({ message: "Captcha verification failed" });
     }
-
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -102,4 +102,39 @@ export const refresh = async (req, res) => {
 
     res.json({ success: true, accessToken });
   });
+};
+
+export const googleAuth = async (req, res) => {
+  const { token } = req.body;
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  if (!token) return res.status(400).json({ message: "Token required" });
+
+  try {
+    // Verify Google token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const user = {
+      name: payload.name,
+      email: payload.email,
+      picture: payload.picture,
+      sub: payload.sub, // Google unique ID
+    };
+
+    await User.create({
+      firstName: payload.name.split(" ")[0],
+      lastName: payload.name.split(" ")[1],
+      email: payload.email,
+      picture: payload.picture,
+      sub: payload.sub,
+    });
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: "Invalid token" });
+  }
 };

@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { signup } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
+import {GoogleLogin} from "../components/GoogleLogin";
 
 function Login() {
   const navigate = useNavigate();
@@ -253,6 +254,7 @@ function Login() {
                   <hr className="flex-grow border-gray-600" />
                 </div>
 
+                    <GoogleLogin/>
                 <div className="flex gap-3">
                   <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <img
