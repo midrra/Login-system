@@ -9,15 +9,13 @@ import axios from "axios";
 import { login } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
-// import { useFormikContext } from "formik";
-
+import { GoogleLogin } from "../components/GoogleLogin";
 
 function Login() {
   const [check, setCheck] = useState(false);
-    const [captchaToken, setCaptchaToken] = useState("");
-    const [captchaError, setCaptchaError] = useState("");
-      // const { setErrors } = useFormikContext();
-  
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaError, setCaptchaError] = useState("");
+  // const { setErrors } = useFormikContext();
 
   const navigate = useNavigate();
   const validationSchema = Yup.object({
@@ -50,12 +48,12 @@ function Login() {
           <Formik
             initialValues={{ name: "", email: "", password: "", agree: false }}
             validationSchema={validationSchema}
-            onSubmit={async (values, { setSubmitting,setErrors }) => {
-                if (!captchaToken) {
-                  setErrors({ general: "captcha filed to execute" });
-                  setSubmitting(true);
-                  retrun;
-                }
+            onSubmit={async (values, { setSubmitting, setErrors }) => {
+              if (!captchaToken) {
+                setErrors({ general: "captcha filed to execute" });
+                setSubmitting(true);
+                retrun;
+              }
               try {
                 const data = await login({
                   name: values.name,
@@ -205,19 +203,12 @@ function Login() {
 
                 <div className="flex items-center gap-2 my-4">
                   <hr className="flex-grow border-gray-600" />
-                  <span className="text-gray-400 text-sm">or sign up with</span>
+                  <span className="text-gray-400 text-sm">or login with</span>
                   <hr className="flex-grow border-gray-600" />
                 </div>
 
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <img
-                      src="https://www.svgrepo.com/show/355037/google.svg"
-                      alt="Google"
-                      className="w-4 h-4"
-                    />
-                    Google
-                  </button>
+                  <GoogleLogin />
                   <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"

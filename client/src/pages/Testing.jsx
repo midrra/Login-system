@@ -16,9 +16,11 @@ function Testing() {
     const fetchHome = async () => {
       try {
         const res = await api.get("/home");
+        console.log(res.data)
         setDataName({
           data: res.data.running,
           user: res.data.user.email,
+          ID: res.data.user.id,
           time: res.data.user.exp,
         });
       } catch (error) {
@@ -30,6 +32,7 @@ function Testing() {
     <div className="color-blue-500 font-bold">
       <p>User email: {dataName.data}</p>
       <p>user: {dataName.user}</p>
+      <p>ID: {dataName.ID}</p>
       <p>Token expires at: {realDate(dataName.time)}</p>
     </div>
   );

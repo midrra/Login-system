@@ -249,22 +249,14 @@ function Login() {
                 <div className="flex items-center gap-2 my-4">
                   <hr className="flex-grow border-gray-600" />
                   <span className="text-gray-400 text-sm">
-                    or login in with
+                    or login with
                   </span>
                   <hr className="flex-grow border-gray-600" />
                 </div>
 
-                    <GoogleLogin/>
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <img
-                      src="https://www.svgrepo.com/show/355037/google.svg"
-                      alt="Google"
-                      className="w-4 h-4"
-                    />
-                    Google
-                  </button>
-                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  <GoogleLogin/>
+                    <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
                       alt="Apple"

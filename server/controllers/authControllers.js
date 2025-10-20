@@ -106,35 +106,45 @@ export const refresh = async (req, res) => {
 
 export const googleAuth = async (req, res) => {
   const { token } = req.body;
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  console.log(token);
   if (!token) return res.status(400).json({ message: "Token required" });
 
   try {
-    // Verify Google token
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    // Fetch user info from Google using the access token
+    const userInfoResponse = await fetch(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const user = await userInfoResponse.json();
+
+    //Check for excitsting user
+    const email = user.email;
+    const existingUser = await User.findOne({ email });
+    console.log(user,'from login user')
+    if (existingUser) {
+      const { accessToken, refreshToken } = generateTokens(existingUser);
+      return res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        accessToken,
+
+      });
+    }
+
+    const newUser = await User.create({
+      firstName: user.given_name,
+      lastName: user.family_name,
+      email: user.email,
+      picture: user.picture,
+      sub: user.sub,
     });
 
-    const payload = ticket.getPayload();
-
-    const user = {
-      name: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      sub: payload.sub, // Google unique ID
-    };
-
-    await User.create({
-      firstName: payload.name.split(" ")[0],
-      lastName: payload.name.split(" ")[1],
-      email: payload.email,
-      picture: payload.picture,
-      sub: payload.sub,
-    });
-    res.status(200).json({ user });
+    res.status(201).json({ success: true,    message: "User created successfully", user:newUser, accessToken });
   } catch (error) {
     console.error(error);
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ success: false, message: "Google login failed" });
   }
 };

@@ -1,59 +1,59 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { googleLogin } from "../api/auth";
 
 export function GoogleLogin() {
-  useEffect(() => {
+  const navigate = useNavigate();
+
+  const handlePopupLogin = () => {
     /* global google */
-    google.accounts.id.initialize({
+    const client = google.accounts.oauth2.initTokenClient({
       client_id: import.meta.env.VITE_CLIENT_ID,
-      callback: handleCredentialResponse,
+      scope: "email profile openid",
+      callback: async (tokenResponse) => {
+        
+        const accessToken = tokenResponse.access_token;
+        try {
+          const data = await googleLogin({
+            token: accessToken,
+          });
+          console.log("Login succefully", data);
+          
+        navigate("/");
+        } catch (error) {
+          // console.log("Login failed", error.message);
+        }
+        // Send token to backend for verification
+        // const res = await fetch("http://localhost:3000/auth/google", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ token: accessToken }),
+        // });
+
+        // const data = await res.json();
+        // console.log("backend response", data);
+        // if (!data.success) return;
+      },
+        // localStorage.setItem("accessToken", data.accessToken);
     });
 
-
-
-    // google.accounts.id.renderButton(
-    //   document.getElementById("googleSignInDiv"),
-    //   {
-    //     theme: "filled_blue", 
-    // size: "large",        
-    // text: "continue_with", 
-    // shape: "pill",       
-    // logo_alignment: "left",
-    //   }
-    // );
-
-  }, []);
-
-  const handleCredentialResponse = async (response) => {
-    try {
-      const token = response.credential;
-      const decoded = jwtDecode(token);
-      console.log("Decoded user:", decoded);
-
-      // Send token to backend for verification
-      const res = await axios.post("http://localhost:3000/auth/google", {
-        token,
-      });
-
-      // Save the returned user info or token
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      alert(`Welcome ${res.data.user.name}`);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-     const handleCustomGoogleLogin = () => {
-    // Opens Google One Tap or popup
-    google.accounts.id.prompt(); 
+    client.requestAccessToken(); // triggers popup
   };
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <h2 className="mb-4 text-xl font-semibold">Login with Google</h2>
-      <button onClick={handleCustomGoogleLogin} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg" id="googleSignInDiv">Google</button>
-      {/* <div onClick={buttonHandler}></div> */}
-    </div>
+    <button
+      type="button"
+      onClick={handlePopupLogin}
+      className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer"
+    >
+      <img
+        src="https://www.svgrepo.com/show/355037/google.svg"
+        alt="Google"
+        className="w-4 h-4"
+      />
+      Google
+    </button>
   );
 }
-
