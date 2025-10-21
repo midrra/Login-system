@@ -10,7 +10,12 @@ const userSchema = new mongoose.Schema(
   picture: { type: String }, 
   provider: { type: String, enum: ["local", "google"], default: "local" },
   emailVerified: { type: Boolean, default: false }, // useful to track verification status
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
   },
+},
   { timestamps: true }
 );
 

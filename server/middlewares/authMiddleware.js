@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const authMddlewares = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   try {
     if (!req.headers.authorization) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -17,4 +17,10 @@ const authMddlewares = (req, res, next) => {
   }
 };
 
-export default authMddlewares;
+export const requireRole = (role) => {
+  return (req, res, next) => {
+    if (req.user.role !== role)
+      return res.status(403).json({ message: "Access denied" });
+    next();
+  };
+};

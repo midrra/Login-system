@@ -8,7 +8,8 @@ import * as Yup from "yup";
 import { signup } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
-import {GoogleLogin} from "../components/GoogleLogin";
+import { GoogleLogin } from "../components/GoogleLogin";
+import Alert, { showError } from "../components/Alert";
 
 function Login() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
+      <Alert/>
       <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540]  md:h-[98vh]">
         {/* Left side*/}
         <div className="flex-1">
@@ -72,7 +74,13 @@ function Login() {
                 console.log("Signup success:", data);
                 navigate("/");
               } catch (error) {
+                setSubmitting(false);
                 console.log("Signup failed", error.message);
+                showError(
+                  error.message === "Invalid credentials"
+                    ? "Invalid email or password"
+                    : "Login failed. Please try again."
+                );
               }
             }}
             validateOnChange={true}
@@ -248,15 +256,13 @@ function Login() {
 
                 <div className="flex items-center gap-2 my-4">
                   <hr className="flex-grow border-gray-600" />
-                  <span className="text-gray-400 text-sm">
-                    or login with
-                  </span>
+                  <span className="text-gray-400 text-sm">or login with</span>
                   <hr className="flex-grow border-gray-600" />
                 </div>
 
                 <div className="flex gap-3">
-                  <GoogleLogin/>
-                    <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  <GoogleLogin />
+                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
                       alt="Apple"

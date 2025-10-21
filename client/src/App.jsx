@@ -5,15 +5,25 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Testing from "./pages/Testing";
 import Terms from "./pages/Terms";
+import AdminPage from "./pages/AdminPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Testing/>}/>
-        <Route path="/terms & conditions" element={<Terms/>}/>
+        <Route path="/" element={<Testing />} />
+        <Route path="/terms & conditions" element={<Terms />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route
+          path="admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="*"
           element={<div className="bg-red-600">404 Page Not Found</div>}

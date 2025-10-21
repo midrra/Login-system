@@ -1,10 +1,10 @@
 import { Router } from "express";
-import authMiddlewares from "../middlewares/authMiddleware.js";
+import {verifyToken,requireRole} from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.get("/", authMiddlewares, (req, res) => {
-  res.send({ running: "Auth API is running...", user: req.user });
+router.get("/", verifyToken,requireRole('admin'), (req, res) => {
+  res.send({ running: "welcome admin", user: req.user });
 });
 
 export default router;

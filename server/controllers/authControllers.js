@@ -6,13 +6,13 @@ import { OAuth2Client } from "google-auth-library";
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
-    { id: user._id, email: user.email },
+    { id: user._id, email: user.email, role: user.role,},
     process.env.JWT_SECRET,
     { expiresIn: "15m" }
   );
 
   const refreshToken = jwt.sign(
-    { id: user._id, email: user.email },
+    { id: user._id, email: user.email ,role: user.role},
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: "7d" }
   );
@@ -146,5 +146,34 @@ export const googleAuth = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(401).json({ success: false, message: "Google login failed" });
+  }
+};
+
+export const appleLogin = async (req, res) => {
+const APPLE_TEAM_ID = "YOUR_TEAM_ID";
+const APPLE_KEY_ID = "YOUR_KEY_ID";
+const APPLE_CLIENT_ID = "com.yourapp.web";
+const PRIVATE_KEY = fs.readFileSync("AuthKey_XXXX.p8");
+  const { id_token } = req.body;
+
+  try {
+    // Verify the Apple token
+    const appleKeysUrl = "https://appleid.apple.com/auth/keys";
+    const { data } = await axios.get(appleKeysUrl);
+
+    // Optionally, verify the JWT signature using Apple public keys
+    const decoded = jwt.decode(id_token, { complete: true });
+    const email = decoded.payload.email;
+
+    // Here you can check if user exists or create one
+    const user = { email };
+
+    // Return your own JWT
+    const accessToken = jwt.sign({ userId: user.id }, "YOUR_SECRET", { expiresIn: "7d" });
+    
+    res.json({ accessToken, user });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: "Apple login failed" });
   }
 };

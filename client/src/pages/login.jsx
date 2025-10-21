@@ -10,11 +10,12 @@ import { login } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
+import Alert,{showError} from "../components/Alert";
 
 function Login() {
   const [check, setCheck] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-  const [captchaError, setCaptchaError] = useState("");
+  const [AlertFire, setAlertFire] = useState(false);
   // const { setErrors } = useFormikContext();
 
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
+      <Alert/>
       <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540] md:h-[98vh]">
         {/* Left side*/}
         <div className="flex-1">
@@ -62,10 +64,23 @@ function Login() {
                   captchaToken,
                 });
                 setSubmitting(false);
-                console.log("Login successfully", data);
-                navigate("/");
+                console.log("Login successful", data);
+                const role = localStorage.getItem("role");
+                if (role==="admin"){
+                  navigate("/admin");
+
+                }else {
+                  navigate("/")
+                }
               } catch (error) {
+                setSubmitting(false);
+
                 console.log(error.message);
+              showError(
+                  error.message === "Invalid credentials"
+                    ? "Invalid email or password"
+                    : "Login failed. Please try again."
+                );
               }
             }}
             validateOnChange={true}
@@ -191,6 +206,7 @@ function Login() {
                 <div className="relative">
                   <button
                     type="submit"
+                    // onClick={()=>setAlertFire(prev=>!prev)}
                     disabled={isSubmitting}
                     className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
                   >

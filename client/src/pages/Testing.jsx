@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import api from "../api/axios";
 import { data } from "react-router-dom";
+import Alert from "../components/Alert";
 
 function Testing() {
   const [dataName, setDataName] = useState({});
@@ -30,6 +31,7 @@ function Testing() {
   }, []);
   return (
     <div className="color-blue-500 font-bold">
+      <Alert/>
       <p>User email: {dataName.data}</p>
       <p>user: {dataName.user}</p>
       <p>ID: {dataName.ID}</p>
