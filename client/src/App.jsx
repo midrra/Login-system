@@ -12,7 +12,13 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Testing />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute requiredRole="user">{<Testing />} </ProtectedRoute>
+          }
+        />
+
         <Route path="/terms & conditions" element={<Terms />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

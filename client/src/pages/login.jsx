@@ -65,12 +65,13 @@ function Login() {
                 });
                 setSubmitting(false);
                 console.log("Login successful", data);
+                //we have to post to /home/em to get the role 
                 const role = localStorage.getItem("role");
                 if (role==="admin"){
-                  navigate("/admin");
+                  navigate("/admin",{replace:true});
 
                 }else {
-                  navigate("/")
+                  navigate("/",{replace:true})
                 }
               } catch (error) {
                 setSubmitting(false);
