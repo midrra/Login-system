@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 
 const api = axios.create({
@@ -25,6 +25,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    console.log("axios refresh setup")
       if (originalRequest.url.includes("/auth/refresh")) {
       return Promise.reject(error);
       }
@@ -36,7 +37,6 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
           const refreshRes = await api.post("/auth/refresh");
-          console.log("here")
         const newAccessToken = refreshRes.data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
 

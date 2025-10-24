@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Slider from "../components/Slider";
 import { Eye } from "lucide-react";
@@ -10,7 +10,8 @@ import { login } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
-import Alert,{showError} from "../components/Alert";
+import Alert, { showError } from "../components/Alert";
+import api from "../api/axios";
 
 function Login() {
   const [check, setCheck] = useState(false);
@@ -30,7 +31,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
-      <Alert/>
+      <Alert />
       <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540] md:h-[98vh]">
         {/* Left side*/}
         <div className="flex-1">
@@ -65,19 +66,18 @@ function Login() {
                 });
                 setSubmitting(false);
                 console.log("Login successful", data);
-                //we have to post to /home/em to get the role 
-                const role = localStorage.getItem("role");
-                if (role==="admin"){
-                  navigate("/admin",{replace:true});
-
-                }else {
-                  navigate("/",{replace:true})
+                const res = await api.get("/home/em");
+                const role = res.data.user.role;
+                if (role === "admin") {
+                  navigate("/admin", { replace: true });
+                } else {
+                  navigate("/", { replace: true });
                 }
               } catch (error) {
                 setSubmitting(false);
 
                 console.log(error.message);
-              showError(
+                showError(
                   error.message === "Invalid credentials"
                     ? "Invalid email or password"
                     : "Login failed. Please try again."
@@ -207,7 +207,6 @@ function Login() {
                 <div className="relative">
                   <button
                     type="submit"
-                    // onClick={()=>setAlertFire(prev=>!prev)}
                     disabled={isSubmitting}
                     className="w-full bg-purple-600 hover:bg-purple-700 rounded-md py-2 font-medium transition cursor-pointer"
                   >

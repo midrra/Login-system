@@ -6,13 +6,13 @@ import { OAuth2Client } from "google-auth-library";
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
-    { id: user._id, email: user.email, role: user.role,},
+    { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "1m" }
   );
 
   const refreshToken = jwt.sign(
-    { id: user._id, email: user.email ,role: user.role},
+    { id: user._id, email: user.email, role: user.role },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: "7d" }
   );
@@ -67,6 +67,11 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
+    if (!user.password) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    console.log(user.password,"here us working");
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
@@ -95,18 +100,17 @@ export const refresh = async (req, res) => {
     if (err) return res.status(403).json({ message: "Invalid refresh token" });
 
     const accessToken = jwt.sign(
-      { id: decoded.id, email: decoded.email },
+      { id: decoded.id, email: decoded.email, role: decoded.role },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "1m" }
     );
-
     res.json({ success: true, accessToken });
   });
 };
 
+//GoogleLogin
 export const googleAuth = async (req, res) => {
   const { token } = req.body;
-  console.log(token);
   if (!token) return res.status(400).json({ message: "Token required" });
 
   try {
@@ -123,14 +127,13 @@ export const googleAuth = async (req, res) => {
     //Check for excitsting user
     const email = user.email;
     const existingUser = await User.findOne({ email });
-    console.log(user,'from login user')
+    console.log(existingUser, "is user exist");
     if (existingUser) {
       const { accessToken, refreshToken } = generateTokens(existingUser);
       return res.status(200).json({
         success: true,
         message: "User logged in successfully",
         accessToken,
-
       });
     }
 
@@ -141,8 +144,16 @@ export const googleAuth = async (req, res) => {
       picture: user.picture,
       sub: user.sub,
     });
+    const { accessToken, refreshToken } = generateTokens(newUser);
 
-    res.status(201).json({ success: true,    message: "User created successfully", user:newUser, accessToken });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "User created successfully",
+        user: newUser,
+        accessToken,
+      });
   } catch (error) {
     console.error(error);
     res.status(401).json({ success: false, message: "Google login failed" });
@@ -150,10 +161,10 @@ export const googleAuth = async (req, res) => {
 };
 
 export const appleLogin = async (req, res) => {
-const APPLE_TEAM_ID = "YOUR_TEAM_ID";
-const APPLE_KEY_ID = "YOUR_KEY_ID";
-const APPLE_CLIENT_ID = "com.yourapp.web";
-const PRIVATE_KEY = fs.readFileSync("AuthKey_XXXX.p8");
+  const APPLE_TEAM_ID = "YOUR_TEAM_ID";
+  const APPLE_KEY_ID = "YOUR_KEY_ID";
+  const APPLE_CLIENT_ID = "com.yourapp.web";
+  const PRIVATE_KEY = fs.readFileSync("AuthKey_XXXX.p8");
   const { id_token } = req.body;
 
   try {
@@ -169,11 +180,13 @@ const PRIVATE_KEY = fs.readFileSync("AuthKey_XXXX.p8");
     const user = { email };
 
     // Return your own JWT
-    const accessToken = jwt.sign({ userId: user.id }, "YOUR_SECRET", { expiresIn: "7d" });
-    
+    const accessToken = jwt.sign({ userId: user.id }, "YOUR_SECRET", {
+      expiresIn: "7d",
+    });
+
     res.json({ accessToken, user });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(400).json({ message: "Apple login failed" });
   }
 };

@@ -6,7 +6,6 @@ export function GoogleLogin() {
   const navigate = useNavigate();
 
   const handlePopupLogin = () => {
-    /* global google */
     const client = google.accounts.oauth2.initTokenClient({
       client_id: import.meta.env.VITE_CLIENT_ID,
       scope: "email profile openid",
@@ -21,25 +20,12 @@ export function GoogleLogin() {
           
         navigate("/");
         } catch (error) {
-          // console.log("Login failed", error.message);
+          console.log("Login failed", error.message);
         }
-        // Send token to backend for verification
-        // const res = await fetch("http://localhost:3000/auth/google", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({ token: accessToken }),
-        // });
-
-        // const data = await res.json();
-        // console.log("backend response", data);
-        // if (!data.success) return;
       },
-        // localStorage.setItem("accessToken", data.accessToken);
     });
 
-    client.requestAccessToken(); // triggers popup
+    client.requestAccessToken();
   };
 
   return (

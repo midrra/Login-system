@@ -15,10 +15,9 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute requiredRole="user">{<Testing />} </ProtectedRoute>
+            <ProtectedRoute>{<Testing />} </ProtectedRoute>
           }
         />
-
         <Route path="/terms & conditions" element={<Terms />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -30,6 +29,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="admin" element={<AdminPage />} />
         <Route
           path="*"
           element={<div className="bg-red-600">404 Page Not Found</div>}

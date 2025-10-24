@@ -11,6 +11,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
       const token = localStorage.getItem("accessToken");
 
       if (!token) {
+        console.log("there are not token")
         setStatus("unauthorized");
         return;
       }
@@ -19,6 +20,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
         const res = await api.get("/home/em");
 
         setRole(res.data.user.role);
+        console.log(res.data.user,"from protected route")
         setStatus("authorized");
       } catch (err) {
         localStorage.removeItem("accessToken");
