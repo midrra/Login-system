@@ -7,6 +7,7 @@ import Testing from "./pages/Testing";
 import Terms from "./pages/Terms";
 import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VerifyOtp from "./pages/VerifyOtp";
 
 function App() {
   return (
@@ -14,14 +15,15 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <ProtectedRoute>{<Testing />} </ProtectedRoute>
-          }
+          element={<ProtectedRoute>{<Testing />} </ProtectedRoute>}
         />
         <Route path="/terms & conditions" element={<Terms />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup />}/>
+         
+        <Route path="/signup/verify-otp" element={<VerifyOtp />} />
         <Route
+
           path="admin"
           element={
             <ProtectedRoute requiredRole="admin">

@@ -40,3 +40,25 @@ export const googleLogin = async (googleData) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+//OTP
+export const createOtp = async (values) => {
+  try {
+    const res = await api.post("auth/create-otp", values);
+    return res.data;
+    console.log(res, "the opt is created");
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const verifyOtp = async (values) => {
+  try {
+    const res = await api.post("auth/verify-otp",
+      values,
+    );
+    return res.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

@@ -1,8 +1,9 @@
 import User from "../models/User.js";
+import Otp from "../models/Otp.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import { OAuth2Client } from "google-auth-library";
+import nodemailer from "nodemailer";
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -22,17 +23,22 @@ const generateTokens = (user) => {
 
 // Signup
 export const signup = async (req, res) => {
+  const { firstName, lastName, email, password, captchaToken } = req.body;
   try {
-    const { firstName, lastName, email, password, captchaToken } = req.body;
-
+    const otpRecord = await Otp.findOne({ email });
+    if (!otpRecord || !otpRecord.verified) {
+      return res.status(400).json({ message: "Please verify your OTP first" });
+    }
+    
     // Verify captcha
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
     );
-
+    
     if (!response.data.success || response.data.score < 0.5) {
       return res.status(400).json({ message: "Captcha verification failed" });
     }
+    console.log(firstName,lastName,password)
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -71,7 +77,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    console.log(user.password,"here us working");
+    console.log(user.password, "here us working");
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
@@ -146,47 +152,79 @@ export const googleAuth = async (req, res) => {
     });
     const { accessToken, refreshToken } = generateTokens(newUser);
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "User created successfully",
-        user: newUser,
-        accessToken,
-      });
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user: newUser,
+      accessToken,
+    });
   } catch (error) {
     console.error(error);
     res.status(401).json({ success: false, message: "Google login failed" });
   }
 };
 
-export const appleLogin = async (req, res) => {
-  const APPLE_TEAM_ID = "YOUR_TEAM_ID";
-  const APPLE_KEY_ID = "YOUR_KEY_ID";
-  const APPLE_CLIENT_ID = "com.yourapp.web";
-  const PRIVATE_KEY = fs.readFileSync("AuthKey_XXXX.p8");
-  const { id_token } = req.body;
+//OTP
+export const createOtp = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email required" });
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const otpHash = await bcrypt.hash(otp, 10);
+  await Otp.updateOne(
+    { email: email },
+    {
+      otpHash: otpHash,
+      expiresAt: Date.now() + 15 * 60 * 1000,
+         verified: false,
+    },
+    { upsert: true }
+  );
 
   try {
-    // Verify the Apple token
-    const appleKeysUrl = "https://appleid.apple.com/auth/keys";
-    const { data } = await axios.get(appleKeysUrl);
-
-    // Optionally, verify the JWT signature using Apple public keys
-    const decoded = jwt.decode(id_token, { complete: true });
-    const email = decoded.payload.email;
-
-    // Here you can check if user exists or create one
-    const user = { email };
-
-    // Return your own JWT
-    const accessToken = jwt.sign({ userId: user.id }, "YOUR_SECRET", {
-      expiresIn: "7d",
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
-    res.json({ accessToken, user });
+    await transporter.sendMail({
+      from: `"Your App" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your verification code is ${otp}. It expires in 15 minutes.`,
+    });
+
+    res.json({ message: "OTP sent successfully" });
   } catch (err) {
-    // console.error(err);
-    res.status(400).json({ message: "Apple login failed" });
+    res.status(500).json({ message: "Failed to send OTP", error: err.message });
   }
+};
+
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const otpEmail = await Otp.findOne({ email });
+
+  if (!otpEmail) return res.status(400).json({ message: "No OTP found" });
+
+  if (Date.now() > new Date(otpEmail.expiresAt).getTime()) {
+    await Otp.deleteOne({ email });
+    return res.status(400).json({ message: "OTP expired" });
+  }
+
+  const isMatch = await bcrypt.compare(otp, otpEmail.otpHash);
+
+  if (!isMatch) return res.status(400).json({ message: "Invalid OTP" });
+
+  await Otp.updateOne({ email }, { verified: true });
+
+  // OTP verified → you can log in or sign up the user here
+  // await Otp.deleteOne({ email });
+  res.json({ message: "OTP verified successfully" });
 };

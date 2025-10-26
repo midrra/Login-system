@@ -5,7 +5,7 @@ import { Eye } from "lucide-react";
 import InputField from "../components/InputField";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { signup } from "../api/auth";
+import { signup, verifyOtp, createOtp } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
@@ -30,7 +30,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1e1b2e] text-white font-sans">
-      <Alert/>
+      <Alert />
       <div className="w-[90%] md:w-[850px] flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl bg-[#2b2540]  md:h-[98vh]">
         {/* Left side*/}
         <div className="flex-1">
@@ -63,16 +63,20 @@ function Login() {
                   setSubmitting(true);
                   retrun;
                 }
-                const data = await signup({
-                  firstName: values.firstName,
-                  lastName: values.lastName,
+                await createOtp({
                   email: values.email,
-                  password: values.password,
-                  captchaToken,
                 });
+                navigate("/signup/verify-otp",{state:{...values,captchaToken},replace:true});
+
+                // const data = await signup({
+                //   firstName: values.firstName,
+                //   lastName: values.lastName,
+                //   email: values.email,
+                //   password: values.password,
+                //   captchaToken:values.captchaToken,
+                // });
                 setSubmitting(false);
                 console.log("Signup success:", data);
-                navigate("/");
               } catch (error) {
                 setSubmitting(false);
                 console.log("Signup failed", error.message);
