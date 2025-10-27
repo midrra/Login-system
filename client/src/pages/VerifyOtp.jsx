@@ -6,11 +6,14 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useLocation } from "react-router-dom";
+import { userContext } from "../lib/userContext";
+import Alert, { showError } from "../components/Alert";
+import { useNavigate } from "react-router-dom";
 
 function VerifyOtp() {
-  const { state } = useLocation();
   const [insertOtp, setInserOtp] = useState();
+  const { user } = userContext();
+  const navigate = useNavigate();
 
   const maxLength = 6;
 
@@ -18,23 +21,24 @@ function VerifyOtp() {
     if (value.length === maxLength) {
       try {
         const res = await verifyOtp({
-          email: "el.theearth@gmail.com",
+          email: user.email,
           otp: value,
         });
+
         console.log(res, "from verfyed OTP");
-        // return res.data;
-        console.log(state, "the state comes from fromik");
+        console.log(user, "This is from context Api");
 
         const data = await signup({
-          firstName: state.firstName,
-          lastName: state.lastName,
-          email: state.email,
-          password: state.password,
-          captchaToken: state.captchaToken,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          password: user.password,
+          captchaToken: user.captchaToken,
         });
         console.log(data, "signupd");
-        Navigate("/")
+        navigate("/",{replace:true});
       } catch (error) {
+        showError("Something went wrong!");
         console.log(error.message);
       }
     }
@@ -43,20 +47,25 @@ function VerifyOtp() {
 
   return (
     <>
-      <div className="text-center">Please Enter Your Verification Code</div>
-      <InputOTP maxLength={6} value={insertOtp} onChange={otpHandler}>
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-        </InputOTPGroup>
-        <InputOTPSeparator />
-        <InputOTPGroup>
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-      </InputOTP>
+      <div className="flex items-center justify-center min-h-screen">
+          <Alert />
+        <div>
+          <div className="text-center mb-5 text-2xl font-bold">Please Enter Your Verification Code</div>
+          <InputOTP maxLength={6} value={insertOtp} onChange={otpHandler} className="scale-220">
+            <InputOTPGroup>
+              <InputOTPSlot index={0}   className="w-12 h-12 text-2xl "/>
+              <InputOTPSlot index={1}   className="w-12 h-12 text-2xl"/>
+              <InputOTPSlot index={2}   className="w-12 h-12 text-2xl"/>
+            </InputOTPGroup>
+            <InputOTPSeparator />
+            <InputOTPGroup>
+              <InputOTPSlot index={3}  className="w-12 h-12 text-2xl"/>
+              <InputOTPSlot index={4}  className="w-12 h-12 text-2xl"/>
+              <InputOTPSlot index={5}  className="w-12 h-12 text-2xl"/>
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
+      </div>
     </>
   );
 }

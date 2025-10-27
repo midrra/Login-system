@@ -16,26 +16,23 @@ function Testing() {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const res = await api.get("/home");
+        const res = await api.get("/home/em");
         console.log(res.data)
         setDataName({
-          data: res.data.running,
+          message: res.data.running,
           user: res.data.user.email,
-          ID: res.data.user.id,
-          time: res.data.user.exp,
         });
       } catch (error) {
       }
     };
     fetchHome();
+    
   }, []);
   return (
     <div className="color-blue-500 font-bold">
       <Alert/>
-      <p>User email: {dataName.data}</p>
+      <p>User email: {dataName.message}</p>
       <p>user: {dataName.user}</p>
-      <p>ID: {dataName.ID}</p>
-      <p>Token expires at: {realDate(dataName.time)}</p>
     </div>
   );
 }

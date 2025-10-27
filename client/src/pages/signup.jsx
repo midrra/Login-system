@@ -10,13 +10,14 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
 import Alert, { showError } from "../components/Alert";
+import { userContext } from "../lib/userContext";
 
 function Login() {
   const navigate = useNavigate();
   const [check, setCheck] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaError, setCaptchaError] = useState("");
-  // const { executeRecaptcha } = useGoogleReCaptcha();
+  const {setUser,setError} = userContext();
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Enter Your First Name"),
@@ -66,7 +67,8 @@ function Login() {
                 await createOtp({
                   email: values.email,
                 });
-                navigate("/signup/verify-otp",{state:{...values,captchaToken},replace:true});
+                setUser({...values,captchaToken})
+                navigate("/signup/verify-otp",{replace:true});
 
                 // const data = await signup({
                 //   firstName: values.firstName,
@@ -76,10 +78,8 @@ function Login() {
                 //   captchaToken:values.captchaToken,
                 // });
                 setSubmitting(false);
-                console.log("Signup success:", data);
               } catch (error) {
                 setSubmitting(false);
-                console.log("Signup failed", error.message);
                 showError(
                   error.message === "Invalid credentials"
                     ? "Invalid email or password"

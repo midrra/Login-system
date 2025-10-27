@@ -29,16 +29,15 @@ export const signup = async (req, res) => {
     if (!otpRecord || !otpRecord.verified) {
       return res.status(400).json({ message: "Please verify your OTP first" });
     }
-    
+
     // Verify captcha
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${captchaToken}`
     );
-    
+
     if (!response.data.success || response.data.score < 0.5) {
       return res.status(400).json({ message: "Captcha verification failed" });
     }
-    console.log(firstName,lastName,password)
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -133,7 +132,6 @@ export const googleAuth = async (req, res) => {
     //Check for excitsting user
     const email = user.email;
     const existingUser = await User.findOne({ email });
-    console.log(existingUser, "is user exist");
     if (existingUser) {
       const { accessToken, refreshToken } = generateTokens(existingUser);
       return res.status(200).json({
@@ -177,7 +175,7 @@ export const createOtp = async (req, res) => {
     {
       otpHash: otpHash,
       expiresAt: Date.now() + 15 * 60 * 1000,
-         verified: false,
+      verified: false,
     },
     { upsert: true }
   );
@@ -224,7 +222,5 @@ export const verifyOtp = async (req, res) => {
 
   await Otp.updateOne({ email }, { verified: true });
 
-  // OTP verified → you can log in or sign up the user here
-  // await Otp.deleteOne({ email });
   res.json({ message: "OTP verified successfully" });
 };
