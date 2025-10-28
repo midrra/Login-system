@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
 import Alert, { showError } from "../components/Alert";
 import { userContext } from "../lib/userContext";
+import FacebookLogin from "../components/FacebookLogin";
 
 function Login() {
   const navigate = useNavigate();
@@ -266,14 +267,15 @@ function Login() {
 
                 <div className="flex gap-3">
                   <GoogleLogin />
-                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
+                  {/* <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
                       alt="Apple"
                       className="w-4 h-4 text-white"
                     />
-                    Apple
-                  </button>
+                    Apple */}
+                  {/* </button> */}
+                  <FacebookLogin/>
                 </div>
               </form>
             )}
