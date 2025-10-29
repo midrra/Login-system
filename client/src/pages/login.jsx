@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
 import Alert, { showError } from "../components/Alert";
 import api from "../api/axios";
+import FacebookLogin from "../components/FacebookLogin";
 
 function Login() {
   const [check, setCheck] = useState(false);
@@ -69,7 +70,7 @@ function Login() {
                 const res = await api.get("/home/em");
                 const role = res.data.user.role;
                 if (role === "admin") {
-                  navigate("/admin", { replace: true });
+                  navigate("/admin-dashboard", { replace: true });
                 } else {
                   navigate("/", { replace: true });
                 }
@@ -174,7 +175,7 @@ function Login() {
                   <label>
                     I agree to the
                     <Link
-                      to="/terms & conditions"
+                      to="/terms-conditions"
                       className="text-purple-400 hover:underline pl-1"
                     >
                       Terms & Conditions
@@ -212,7 +213,7 @@ function Login() {
                   >
                     Login
                     {isSubmitting && (
-                      <Spinner className="absolute top-3 left-33" />
+                      <Spinner className="absolute top-3 spinner-style-login md:left-34 sm:left-53 left-30" />
                     )}
                   </button>
                 </div>
@@ -225,14 +226,7 @@ function Login() {
 
                 <div className="flex gap-3">
                   <GoogleLogin />
-                  <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
-                      alt="Apple"
-                      className="w-4 h-4 text-white"
-                    />
-                    Apple
-                  </button>
+                  <FacebookLogin />
                 </div>
               </form>
             )}

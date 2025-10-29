@@ -18,7 +18,7 @@ function Login() {
   const [check, setCheck] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaError, setCaptchaError] = useState("");
-  const {setUser,setError} = userContext();
+  const { setUser, setError } = userContext();
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Enter Your First Name"),
@@ -68,17 +68,10 @@ function Login() {
                 await createOtp({
                   email: values.email,
                 });
-                setUser({...values,captchaToken})
-                navigate("/signup/verify-otp",{replace:true});
+                setUser({ ...values, captchaToken });
+                navigate("/signup/verify-otp", { replace: true });
 
-                // const data = await signup({
-                //   firstName: values.firstName,
-                //   lastName: values.lastName,
-                //   email: values.email,
-                //   password: values.password,
-                //   captchaToken:values.captchaToken,
-                // });
-                setSubmitting(false);
+                 setSubmitting(false);
               } catch (error) {
                 setSubmitting(false);
                 showError(
@@ -216,7 +209,7 @@ function Login() {
                   <label>
                     I agree to the
                     <Link
-                      to="/terms & conditions"
+                      to="/terms-conditions"
                       className="text-purple-400 hover:underline pl-1"
                     >
                       Terms & Conditions
@@ -254,7 +247,7 @@ function Login() {
                   >
                     Create account
                     {isSubmitting && (
-                      <Spinner className="absolute top-3 left-25" />
+                      <Spinner className="absolute top-3 spinner-style md:left-25 sm:left-45 left-26" />
                     )}
                   </button>
                 </div>
@@ -267,15 +260,7 @@ function Login() {
 
                 <div className="flex gap-3">
                   <GoogleLogin />
-                  {/* <button className="flex-1 bg-[#3b3452] hover:bg-[#4a4166] rounded-md py-2 flex items-center justify-center gap-2 text-sm cursor-pointer">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Apple_logo_grey.svg"
-                      alt="Apple"
-                      className="w-4 h-4 text-white"
-                    />
-                    Apple */}
-                  {/* </button> */}
-                  <FacebookLogin/>
+                  <FacebookLogin />
                 </div>
               </form>
             )}

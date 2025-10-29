@@ -1,9 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@media(min-width: 768px) and (max-width: 830px) {
+  .spinner-style {
+   left: 26%;
+  }
+  .spinner-style-login{
+      left: 37%;
+  }
+}
 
-@theme inline {
+/* @custom-variant dark (&:is(.dark *)); */
+
+/* @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -117,4 +126,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
+} */

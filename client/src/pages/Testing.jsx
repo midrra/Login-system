@@ -7,12 +7,6 @@ import Alert from "../components/Alert";
 function Testing() {
   const [dataName, setDataName] = useState({});
 
-  const realDate = () => {
-    const exp = 1760684271; // your JWT exp value
-    const date = new Date(exp * 1000); // convert seconds → milliseconds
-    return date.toLocaleString()
-  };
-
   useEffect(() => {
     const fetchHome = async () => {
       try {
@@ -21,6 +15,7 @@ function Testing() {
         setDataName({
           message: res.data.running,
           user: res.data.user.email,
+          hello:res.data.user.firstName + " "+ res.data.user.lastName
         });
       } catch (error) {
       }
@@ -29,10 +24,12 @@ function Testing() {
     
   }, []);
   return (
-    <div className="color-blue-500 font-bold">
+    <div className="bg-blue-500 text-white font-bold text-2xl font-serif flex items-center justify-center min-h-screen">
+      <div>
       <Alert/>
-      <p>User email: {dataName.message}</p>
+      <p>Hello: {dataName.hello}</p>
       <p>user: {dataName.user}</p>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import { facebookLogin } from "../api/auth";
+import {useNavigate} from 'react-router-dom'
 
 function FacebookLogin() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.fbAsyncInit = function () {
       window.FB.init({
@@ -28,6 +31,8 @@ function FacebookLogin() {
   try {
     const res = await facebookLogin({token:accessToken});
     console.log(res, "the facebook data");
+    navigate('/',{replace:true})
+
   } catch (error) {
     console.error(error);
   }

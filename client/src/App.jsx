@@ -17,21 +17,20 @@ function App() {
           path="/"
           element={<ProtectedRoute>{<Testing />} </ProtectedRoute>}
         />
-        <Route path="/terms & conditions" element={<Terms />} />
+        <Route path="/terms-conditions" element={<Terms />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />}/>
          
         <Route path="/signup/verify-otp" element={<VerifyOtp />} />
         <Route
 
-          path="admin"
+          path="admin-dashboard"
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminPage />
             </ProtectedRoute>
           }
         />
-        <Route path="admin" element={<AdminPage />} />
         <Route
           path="*"
           element={<div className="bg-red-600">404 Page Not Found</div>}

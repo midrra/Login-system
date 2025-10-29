@@ -148,7 +148,13 @@ export const googleAuth = async (req, res) => {
       picture: user.picture,
       sub: user.sub,
     });
+
     const { accessToken, refreshToken } = generateTokens(newUser);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false,
+    });
 
     res.status(201).json({
       success: true,
@@ -163,33 +169,45 @@ export const googleAuth = async (req, res) => {
 };
 
 //Facebook Login
-
-export const facebookAuth = async(req,res)=>{
-  const {token} = req.body
-   try {
+export const facebookAuth = async (req, res) => {
+  const { token } = req.body;
+  try {
     const response = await fetch(
       `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${token}`
     );
     const user = await response.json();
 
-// const existingUser = await User.findOne( {$or: [{ email }, { username }],});    
-  
-// if (existingUser) return res.status(400).json("invalid creadintial")
+    const existingUser = await User.findOne({ email: user.email });
 
-// const newUser = await User.create({
-//   firstName:user.name.split(" ")[1],
-//       lastName:user.name.split(" ")[2],
-//       email:user.email,
-//       password: user.password,
-  
-// })
-    // const { accessToken, refreshToken } = generateTokens(newUser);
+    if (existingUser) {
+      const { accessToken, refreshToken } = generateTokens(existingUser);
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "User logged in successfully",
+          accessToken,
+        });
+    }
 
-  res.json({ message: "Facebook login successful", "accessToken" });
+    const newUser = await User.create({
+      firstName: user.name.split(" ")[0],
+      lastName: user.name.split(" ")[1],
+      email: user.email,
+    });
+    const { accessToken, refreshToken } = generateTokens(newUser);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false,
+    });
+
+    res.json({ message: "Facebook login successful", accessToken });
   } catch (error) {
     res.status(500).json({ message: "Facebook login failed", error });
   }
-}
+};
 
 //OTP
 export const createOtp = async (req, res) => {
