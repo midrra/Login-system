@@ -34,5 +34,4 @@ app.get("/", (req, res) => {
   res.send("✅ Backend running successfully!");
 });
 
-// export const handler = serverless(app);
 export default app;
