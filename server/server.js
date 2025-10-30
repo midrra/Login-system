@@ -30,8 +30,4 @@ app.use("/auth", authRoutes);
 app.use("/home", homeRotues);
 app.use("/api/captch",captch)
 
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
 export const handler = serverless(app);
