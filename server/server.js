@@ -30,4 +30,9 @@ app.use("/auth", authRoutes);
 app.use("/home", homeRotues);
 app.use("/api/captch",captch)
 
-export const handler = serverless(app);
+app.get("/", (req, res) => {
+  res.send("✅ Backend running successfully!");
+});
+
+// export const handler = serverless(app);
+export default app;
