@@ -17,7 +17,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://login-system-chi-ruby.vercel.app",
     credentials: true, // allow cookies / auth headers
   })
 );
