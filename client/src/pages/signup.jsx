@@ -5,7 +5,7 @@ import { Eye } from "lucide-react";
 import InputField from "../components/InputField";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { signup, verifyOtp, createOtp } from "../api/auth";
+import { createOtp } from "../api/auth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";

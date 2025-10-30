@@ -9,7 +9,7 @@ const generateTokens = (user) => {
   const accessToken = jwt.sign(
     { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "1m" }
+    { expiresIn: "5m" }
   );
 
   const refreshToken = jwt.sign(
@@ -56,7 +56,8 @@ export const signup = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
-      secure: false, // change to true in production
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ success: true, accessToken });
@@ -86,7 +87,8 @@ export const login = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
-      secure: false,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ success: true, accessToken });
@@ -107,7 +109,7 @@ export const refresh = async (req, res) => {
     const accessToken = jwt.sign(
       { id: decoded.id, email: decoded.email, role: decoded.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1m" }
+      { expiresIn: "5m" }
     );
     res.json({ success: true, accessToken });
   });
@@ -134,6 +136,13 @@ export const googleAuth = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       const { accessToken, refreshToken } = generateTokens(existingUser);
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       return res.status(200).json({
         success: true,
         message: "User logged in successfully",
@@ -153,7 +162,8 @@ export const googleAuth = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
-      secure: false,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
@@ -181,13 +191,18 @@ export const facebookAuth = async (req, res) => {
 
     if (existingUser) {
       const { accessToken, refreshToken } = generateTokens(existingUser);
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "User logged in successfully",
-          accessToken,
-        });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        accessToken,
+      });
     }
 
     const newUser = await User.create({
@@ -200,7 +215,8 @@ export const facebookAuth = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
-      secure: false,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({ message: "Facebook login successful", accessToken });
@@ -239,10 +255,43 @@ export const createOtp = async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: `"Your App" <${process.env.EMAIL_USER}>`,
+      from: `"Login System" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Your OTP Code",
-      text: `Your verification code is ${otp}. It expires in 15 minutes.`,
+      subject: "Your One-Time Password (OTP)",
+      text: `Your verification code is ${otp}. It expires in 5 minutes.`,
+
+      html: `
+    <div style="
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      padding: 24px;
+      border-radius: 8px;
+      color: #111;
+      line-height: 1.5;
+      max-width: 480px;
+      margin: auto;
+      border: 1px solid #e5e7eb;
+    ">
+      <h2 style="color: #2563eb;">🔐 Verify Your Email</h2>
+      <p>Hi there,</p>
+      <p>Use the following one-time password (OTP) to verify your account. This code will expire in <strong>15 minutes</strong>.</p>
+      <p style="
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 4px;
+        background: #2563eb;
+        color: white;
+        padding: 12px 0;
+        text-align: center;
+        border-radius: 6px;
+      ">
+        ${otp}
+      </p>
+      <p>If you didn’t request this code, please ignore this email.</p>
+      <p>replyTo: "support@login-system.com"</p>
+      <p style="margin-top: 32px; color: #6b7280;">— The Login System Team</p>
+    </div>
+  `,
     });
 
     res.json({ message: "OTP sent successfully" });

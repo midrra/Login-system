@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import authRoutes from "./rotues/authRoutes.js";
 import homeRotues from "./rotues/homeRoutes.js";
 import captch from "./rotues/captch.js"
+import serverless from "serverless-http";
 
 
 const app = express();
@@ -29,7 +30,8 @@ app.use("/auth", authRoutes);
 app.use("/home", homeRotues);
 app.use("/api/captch",captch)
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+export const handler = serverless(app);
