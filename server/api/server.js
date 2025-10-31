@@ -16,10 +16,13 @@ connectDB();
 
 app.use(
   cors({
-    origin: "https://login-system-chi-ruby.vercel.app",
-    credentials: true, // allow cookies / auth headers
+    origin: ["https://login-system-chi-ruby.vercel.app", "http://localhost:5173"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.options("*", cors())
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
