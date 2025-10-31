@@ -1,6 +1,4 @@
 import api from "./axios";
-import { jwtDecode } from "jwt-decode";
-// import fs from "fs";
 
 // Signup request
 export const signup = async (userData) => {

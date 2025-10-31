@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "login-system-k4sr.vercel.app/api",
+  baseURL: "https://login-system-k4sr.vercel.app/api",
   headers: {
     "Content-Type": "application/json",
   },
