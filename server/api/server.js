@@ -7,7 +7,6 @@ import bodyParser from "body-parser";
 import authRoutes from "./rotues/authRoutes.js";
 import homeRotues from "./rotues/homeRoutes.js";
 import captch from "./rotues/captch.js"
-import serverless from "serverless-http";
 
 
 const app = express();
@@ -34,5 +33,4 @@ app.get("/", (req, res) => {
   res.send("✅ Backend running successfully!");
 });
 
-// export const handler = serverless(app);
 export default app;
