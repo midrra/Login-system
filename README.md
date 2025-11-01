@@ -10,9 +10,14 @@ Features:
 - Email OTP verification (via Nodemailer)  
 - Real-time validation on input using **Formik** + **Yup** (validate on every key press)  
 - Protected routes (role-based)  
-- Deployed backend as serverless on Vercel (or run locally)
+- Admin dashboard 
+- Responsive design with TailwindCSS
 
 ---
+
+## Live Demo
+
+👉 [Try the app here](https://login-system-chi-ruby.vercel.app)
 
 ## ✅ Features overview
 
@@ -53,19 +58,51 @@ Features:
 - Facebook App (App ID) and configured Valid OAuth Redirect URIs  
 - Google reCAPTCHA keys (site key + secret)  
 
-Install & run (local)
+### 2. Install dependencies
 
-Backend
-cd server
-npm install
-# run in dev
-npm run dev         # nodemon server.js or your script
-# or production
-node server.js
+- Frontend:
 
-Frontend
-cd client
-npm install
+```bash
+  cd client
+  npm install
+```
+
+- Backend:
+
+```bash
+  cd server
+  npm install
+```
+
+### 4. Run the app
+
+- Start frontend:
+
+```bash
+  cd client
+  npm run dev
+```
+
 npm run dev
-# open http://localhost:5173
-add remdemfile
+
+- Start backend:
+
+```bash
+  cd server
+  npm run dev
+```
+
+## 🌍 Deployment
+
+- Frontend deployed on Vercel
+
+- Backend deployed on Vercle
+
+## 📸 Screenshots
+
+![Screenshot](./public/login-system.png)
+
+## 👤 Author
+
+MOHAMED AWAD – [GitHub](https://github.com/midrra)
+| [LinkedIn](https://www.linkedin.com/in/mohamed-3wad/)
