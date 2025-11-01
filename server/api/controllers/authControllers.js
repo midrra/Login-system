@@ -55,7 +55,7 @@ export const signup = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      f: "none",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -85,7 +85,7 @@ export const login = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -137,7 +137,7 @@ export const googleAuth = async (req, res) => {
       const { accessToken, refreshToken } = generateTokens(existingUser);
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
@@ -160,7 +160,7 @@ export const googleAuth = async (req, res) => {
     const { accessToken, refreshToken } = generateTokens(newUser);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -192,7 +192,7 @@ export const facebookAuth = async (req, res) => {
       const { accessToken, refreshToken } = generateTokens(existingUser);
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
@@ -213,7 +213,7 @@ export const facebookAuth = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "none",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
