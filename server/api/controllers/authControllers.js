@@ -237,7 +237,7 @@ export const createOtp = async (req, res) => {
     { email: email },
     {
       otpHash: otpHash,
-      expiresAt: Date.now() + 15 * 60 * 1000,
+      expiresAt: Date.now() + 5 * 60 * 1000,
       verified: false,
     },
     { upsert: true }
@@ -274,7 +274,7 @@ export const createOtp = async (req, res) => {
     ">
       <h2 style="color: #2563eb;">🔐 Verify Your Email</h2>
       <p>Hi there,</p>
-      <p>Use the following one-time password (OTP) to verify your account. This code will expire in <strong>15 minutes</strong>.</p>
+      <p>Use the following one-time password (OTP) to verify your account. This code will expire in <strong>5 minutes</strong>.</p>
       <p style="
         font-size: 28px;
         font-weight: bold;

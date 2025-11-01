@@ -12,6 +12,7 @@ import captch from "./rotues/captch.js"
 const app = express();
 dotenv.config();
 
+connectDB();
 app.use(
   cors({
     origin: "https://login-system-chi-ruby.vercel.app",
@@ -19,7 +20,6 @@ app.use(
   })
 );
 
-connectDB();
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.json());
