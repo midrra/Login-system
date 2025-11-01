@@ -33,4 +33,7 @@ app.get("/", (req, res) => {
   res.send("✅ Backend running successfully!");
 });
 
+app.listen(3000,
+  console.log("is work")
+)
 export default app;

@@ -319,3 +319,19 @@ export const verifyOtp = async (req, res) => {
 
   res.json({ message: "OTP verified successfully" });
 };
+
+//logout
+export const logout = async (req, res) => {
+  try {
+    // Clear the refresh token cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Logout failed" });
+  }
+};
