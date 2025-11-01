@@ -18,7 +18,7 @@ function InitialRefreshToken({ children }) {
       }
     } catch (error) {
       localStorage.removeItem("accessToken");
-      navigate("/signup", { replace: true });
+      navigate("/login", { replace: true });
       console.error(error);
     } finally {
       setLoading(false);
