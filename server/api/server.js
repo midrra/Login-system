@@ -4,9 +4,9 @@ import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import authRoutes from "./rotues/authRoutes.js";
-import homeRotues from "./rotues/homeRoutes.js";
-import captch from "./rotues/captch.js"
+import authRoutes from "./routes/authRoutes.js";
+import homeRotues from "./routes/homeRoutes.js";
+import captch from "./routes/captch.js"
 
 
 const app = express();
