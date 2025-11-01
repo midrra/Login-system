@@ -41,7 +41,7 @@ function Testing() {
         onClick={clickHandler}
         className="cursor-pointer"
       >
-        Button
+        Logout
       </Button>
       <div className=" font-bold text-2xl font-serif flex items-center justify-center min-h-screen">
         <div>
