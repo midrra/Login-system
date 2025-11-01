@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import api from "../api/axios"; 
+import api from "../api/axios";
 
 export default function ProtectedRoute({ children, requiredRole }) {
   const [status, setStatus] = useState("loading");
@@ -17,7 +17,6 @@ export default function ProtectedRoute({ children, requiredRole }) {
 
       try {
         const res = await api.get("/home/em");
-
         setRole(res.data.user.role);
         setStatus("authorized");
       } catch (err) {

@@ -15,7 +15,7 @@ dotenv.config();
 connectDB();
 app.use(
   cors({
-    origin: "https://login-system-chi-ruby.vercel.app",
+    origin:[ "https://login-system-chi-ruby.vercel.app","http://localhost:5173"],
     credentials: true,
   })
 );

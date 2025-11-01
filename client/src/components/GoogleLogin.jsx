@@ -16,7 +16,6 @@ export function GoogleLogin() {
           const data = await googleLogin({
             token: accessToken,
           });
-          console.log("Login succefully", data);
 
           const res = await api.get("/home/em");
           const role = res.data.user.role;

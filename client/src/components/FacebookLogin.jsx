@@ -31,8 +31,7 @@ function FacebookLogin() {
   async function handleFacebookLogin(accessToken) {
   try {
     const res = await facebookLogin({token:accessToken});
-    console.log(res, "the facebook data");
-    navigate('/',{replace:true})
+    navigate('/')
 
   } catch (error) {
     console.error(error);

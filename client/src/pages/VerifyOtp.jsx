@@ -25,9 +25,6 @@ function VerifyOtp() {
           otp: value,
         });
 
-        console.log(res, "from verfyed OTP");
-        console.log(user, "This is from context Api");
-
         const data = await signup({
           firstName: user.firstName,
           lastName: user.lastName,
@@ -35,7 +32,6 @@ function VerifyOtp() {
           password: user.password,
           captchaToken: user.captchaToken,
         });
-        console.log(data, "signupd");
         navigate("/",{replace:true});
       } catch (error) {
         showError("Something went wrong!");

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../api/axios";
 import Alert from "../components/Alert";
 
@@ -10,7 +9,6 @@ function Testing() {
     const fetchHome = async () => {
       try {
         const res = await api.get("/home/em");
-        console.log(res.data)
         setDataName({
           message: res.data.running,
           user: res.data.user.email,
