@@ -100,7 +100,7 @@ npm run dev
 
 ## 📸 Screenshots
 
-![Screenshot](./public/login-system.png)
+![Screenshot](./client/public/login-system.png)
 
 ## 👤 Author
 
