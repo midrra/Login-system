@@ -10,15 +10,20 @@ export function GoogleLogin() {
       client_id: import.meta.env.VITE_CLIENT_ID,
       scope: "email profile openid",
       callback: async (tokenResponse) => {
-        
         const accessToken = tokenResponse.access_token;
         try {
           const data = await googleLogin({
             token: accessToken,
           });
           console.log("Login succefully", data);
-          
-        navigate("/");
+
+          const res = await api.get("/home/em");
+          const role = res.data.user.role;
+          if (role === "admin") {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/");
+          }
         } catch (error) {
           console.log("Login failed", error.message);
         }

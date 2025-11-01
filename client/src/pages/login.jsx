@@ -66,13 +66,12 @@ function Login() {
                   captchaToken,
                 });
                 setSubmitting(false);
-                console.log("Login successful", data);
                 const res = await api.get("/home/em");
                 const role = res.data.user.role;
                 if (role === "admin") {
-                  navigate("/admin-dashboard", { replace: true });
+                  navigate("/admin-dashboard");
                 } else {
-                  navigate("/", { replace: true });
+                  navigate("/",);
                 }
               } catch (error) {
                 setSubmitting(false);

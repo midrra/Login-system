@@ -31,10 +31,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
 
   if (status === "loading") return <p>Loading...</p>;
 
-  if (status === "unauthorized") return <Navigate to="/login" replace />;
+  if (status === "unauthorized") return <Navigate to="/login" />;
 
   if (requiredRole && role !== requiredRole)
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/unauthorized" />;
 
   return children;
 }
