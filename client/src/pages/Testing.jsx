@@ -17,6 +17,7 @@ function Testing() {
           hello:res.data.user.firstName + " "+ res.data.user.lastName
         });
       } catch (error) {
+        console.log(error)
       }
     };
     fetchHome();
