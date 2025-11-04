@@ -12,7 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
 import Alert, { showError } from "../components/Alert";
 import api from "../api/axios";
-import FacebookLogin from "../components/FacebookLogin";
+// import FacebookLogin from "../components/FacebookLogin";
 
 function Login() {
   const [check, setCheck] = useState(false);
@@ -225,7 +225,7 @@ function Login() {
 
                 <div className="flex gap-3">
                   <GoogleLogin />
-                  <FacebookLogin />
+                  {/* <FacebookLogin /> */}
                 </div>
               </form>
             )}

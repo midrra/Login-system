@@ -11,7 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { GoogleLogin } from "../components/GoogleLogin";
 import Alert, { showError } from "../components/Alert";
 import { userContext } from "../lib/userContext";
-import FacebookLogin from "../components/FacebookLogin";
+// import FacebookLogin from "../components/FacebookLogin";
 
 function Login() {
   const navigate = useNavigate();
