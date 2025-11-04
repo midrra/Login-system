@@ -260,7 +260,7 @@ function Login() {
 
                 <div className="flex gap-3">
                   <GoogleLogin />
-                  <FacebookLogin />
+                  {/* <FacebookLogin /> */}
                 </div>
               </form>
             )}
